@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Peer-Review Tugas Cute</title>
+    <title>About - Peer-Review Tugas Cute</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -80,6 +80,10 @@
             background: linear-gradient(135deg, #F0FFFF, #FFB6C1);
         }
         
+        .card-gradient-4 {
+            background: linear-gradient(135deg, #FFFACD, #E6E6FA);
+        }
+        
         .glass-effect {
             backdrop-filter: blur(15px);
             background: rgba(255, 255, 255, 0.25);
@@ -145,6 +149,8 @@
     <div class="emoji-float" style="top: 60%; left: 8%; animation-delay: -2s;">🦋</div>
     <div class="emoji-float" style="top: 80%; right: 15%; animation-delay: -3s;">💫</div>
     <div class="emoji-float" style="top: 40%; left: 85%; animation-delay: -1.5s;">🌺</div>
+    <div class="emoji-float" style="top: 30%; right: 5%; animation-delay: -2.5s;">🌟</div>
+    <div class="emoji-float" style="top: 70%; left: 15%; animation-delay: -3.5s;">💖</div>
 
     <!-- Navbar -->
     <nav class="navbar-gradient p-4 text-white shadow-lg relative z-10">
@@ -158,8 +164,8 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-6 items-center">
                 <a href="/" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">🏠 Beranda</a>
-                <a href="/about" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📖 About</a>
-                <a href="/contact" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📞 contact</a>
+                <a href="/about" class="nav-link px-3 py-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">📖 About</a>
+                <a href="/contact" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📞 Kontak</a>
                 <a href="/login" class="nav-link px-4 py-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition">🔐 Login</a>
                 <a href="/register" class="nav-link px-4 py-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition">📝 Register</a>
             </div>
@@ -174,8 +180,8 @@
         <div id="mobileMenu" class="mobile-menu md:hidden mt-4 bg-white bg-opacity-20 rounded-lg p-4">
             <div class="flex flex-col space-y-3">
                 <a href="/" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">🏠 Beranda</a>
-                <a href="/about" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📖 About</a>
-                <a href="/contact" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📞 contact</a>
+                <a href="/about" class="nav-link px-3 py-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">📖 About</a>
+                <a href="/contact" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📞 Kontak</a>
                 <a href="/login" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">🔐 Login</a>
                 <a href="/register" class="nav-link px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">📝 Register</a>
             </div>
@@ -186,31 +192,31 @@
     <div class="container mx-auto mt-8 md:mt-16 p-6 flex flex-col md:flex-row items-center relative z-10">
         <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
             <h1 class="text-4xl md:text-6xl font-bold text-purple-800 cute-bounce mb-6">
-                Halo, Teman Belajar! 
-                <span class="rainbow text-pink-600">🥰</span>
+                Tentang Peer-Cutie! 
+                <span class="rainbow text-pink-600">📖</span>
             </h1>
             <p class="text-lg md:text-xl text-purple-700 mb-8 leading-relaxed">
-                Ayo upload tugas dan review bareng di platform cute ini! 
-                Yuk, mulai petualangan seru kita dengan teman-teman! 
-                <span class="sparkle">✨</span>
+                Platform belajar yang menggemaskan untuk teman-teman belajar! 
+                Mari berkenalan lebih dekat dengan kami! 
+                <span class="sparkle">🥰</span>
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <button class="px-8 py-4 card-gradient-1 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="startAdventure()">
-                    Mulai Sekarang! 💕
+                <button class="px-8 py-4 card-gradient-1 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="scrollToFeatures()">
+                    Kenali Kami! 💕
                 </button>
-                <button class="px-8 py-4 card-gradient-2 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="learnMore()">
-                    Pelajari Lebih Lanjut 🌟
+                <button class="px-8 py-4 card-gradient-2 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="joinUs()">
+                    Bergabung Yuk! 🌟
                 </button>
             </div>
         </div>
         
         <div class="md:w-1/2 flex justify-center">
             <div class="relative">
-                <div class="w-80 h-80 card-gradient-3 rounded-3xl cute-shadow hover-lift cursor-pointer flex items-center justify-center" onclick="cuteInteraction()">
+                <div class="w-80 h-80 card-gradient-3 rounded-3xl cute-shadow hover-lift cursor-pointer flex items-center justify-center" onclick="aboutInteraction()">
                     <div class="text-center">
-                        <div class="text-8xl mb-4 wiggle">🎓</div>
-                        <p class="text-2xl font-bold text-purple-800">Cute Study</p>
-                        <p class="text-purple-600">Klik aku! 😸</p>
+                        <div class="text-8xl mb-4 wiggle">📚</div>
+                        <p class="text-2xl font-bold text-purple-800">About Us</p>
+                        <p class="text-purple-600">Klik untuk cerita! 😸</p>
                     </div>
                 </div>
                 <!-- Floating elements around the card -->
@@ -222,29 +228,96 @@
         </div>
     </div>
 
-    <!-- Features Section -->
+    <!-- About Cards Section -->
     <div class="container mx-auto mt-16 p-6 relative z-10">
         <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-800 mb-12 cute-bounce">
-            Kenapa Harus Peer-Cutie? 🤔💭
+            Apa itu Peer-Cutie? 🤔💭
         </h2>
         
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
             <div class="card-gradient-1 p-8 rounded-3xl cute-shadow hover-lift text-center">
-                <div class="text-6xl mb-4 wiggle">📚</div>
-                <h3 class="text-2xl font-bold text-purple-800 mb-4">Review Mudah</h3>
-                <p class="text-purple-700">Upload tugas, dapat feedback dari teman-teman dengan mudah dan menyenangkan!</p>
+                <div class="text-6xl mb-4 wiggle">🌈</div>
+                <h3 class="text-2xl font-bold text-purple-800 mb-4">Platform Pembelajaran</h3>
+                <p class="text-purple-700">Peer-Cutie adalah platform peer review yang dirancang khusus untuk membuat proses belajar menjadi lebih menyenangkan dan menggemaskan!</p>
             </div>
             
             <div class="card-gradient-2 p-8 rounded-3xl cute-shadow hover-lift text-center">
-                <div class="text-6xl mb-4 sparkle">👥</div>
-                <h3 class="text-2xl font-bold text-purple-800 mb-4">Komunitas Seru</h3>
-                <p class="text-purple-700">Bergabung dengan komunitas belajar yang supportif dan penuh semangat!</p>
+                <div class="text-6xl mb-4 sparkle">🎯</div>
+                <h3 class="text-2xl font-bold text-purple-800 mb-4">Misi Kami</h3>
+                <p class="text-purple-700">Menciptakan lingkungan belajar yang positif dan supportif dimana setiap siswa dapat saling membantu dan tumbuh bersama!</p>
             </div>
             
             <div class="card-gradient-3 p-8 rounded-3xl cute-shadow hover-lift text-center">
-                <div class="text-6xl mb-4 float">🏆</div>
-                <h3 class="text-2xl font-bold text-purple-800 mb-4">Prestasi Tinggi</h3>
-                <p class="text-purple-700">Raih prestasi terbaik dengan bantuan peer review yang konstruktif!</p>
+                <div class="text-6xl mb-4 float">💫</div>
+                <h3 class="text-2xl font-bold text-purple-800 mb-4">Visi Kami</h3>
+                <p class="text-purple-700">Menjadi platform peer learning terdepan yang menggabungkan efektivitas pembelajaran dengan pengalaman yang menggemaskan!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="container mx-auto mt-16 p-6 relative z-10">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-purple-800 mb-12 cute-bounce">
+            Kenapa Harus Peer-Cutie? 🌟💖
+        </h2>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card-gradient-1 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 wiggle">👥</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Peer Review</h3>
+                <p class="text-purple-700 text-sm">Review tugas teman dan dapatkan feedback yang membangun untuk kemajuan bersama!</p>
+            </div>
+            
+            <div class="card-gradient-2 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 sparkle">🎨</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Interface Cute</h3>
+                <p class="text-purple-700 text-sm">Tampilan yang menggemaskan membuat belajar jadi lebih menyenangkan dan tidak membosankan!</p>
+            </div>
+            
+            <div class="card-gradient-3 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 float">🏆</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Gamifikasi</h3>
+                <p class="text-purple-700 text-sm">Sistem poin dan achievement yang memotivasi untuk terus belajar dan berkembang!</p>
+            </div>
+            
+            <div class="card-gradient-4 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 wiggle">💬</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Diskusi Real-time</h3>
+                <p class="text-purple-700 text-sm">Chat dan diskusi langsung dengan teman belajar untuk kolaborasi yang efektif!</p>
+            </div>
+            
+            <div class="card-gradient-1 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 sparkle">📱</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Mobile Friendly</h3>
+                <p class="text-purple-700 text-sm">Akses dimana saja, kapan saja dari perangkat apapun dengan mudah!</p>
+            </div>
+            
+            <div class="card-gradient-2 p-6 rounded-3xl cute-shadow hover-lift text-center">
+                <div class="text-5xl mb-4 float">🔒</div>
+                <h3 class="text-xl font-bold text-purple-800 mb-3">Aman & Privasi</h3>
+                <p class="text-purple-700 text-sm">Data kamu aman dan terlindungi dengan enkripsi terbaik untuk keamanan maksimal!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="container mx-auto mt-16 p-6 relative z-10">
+        <div class="card-gradient-3 p-12 rounded-3xl cute-shadow text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-purple-800 mb-6 cute-bounce">
+                Siap Bergabung dengan Komunitas Cute? 
+                <span class="rainbow">🌟</span>
+            </h2>
+            <p class="text-lg md:text-xl text-purple-700 mb-8 leading-relaxed">
+                Yuk, mulai petualangan belajar yang seru dan menggemaskan bersama teman-teman di Peer-Cutie! 
+                <span class="sparkle">✨</span>
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="px-8 py-4 card-gradient-1 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="startJourney()">
+                    Mulai Sekarang! 🚀
+                </button>
+                <button class="px-8 py-4 card-gradient-2 text-purple-800 font-semibold rounded-full hover-lift cute-shadow text-lg" onclick="learnMore()">
+                    Pelajari Lebih Lanjut 📖
+                </button>
             </div>
         </div>
     </div>
@@ -268,39 +341,46 @@
             icon.textContent = menu.classList.contains('active') ? '❌' : '🍔';
         }
         
-        function cuteInteraction() {
+        function aboutInteraction() {
             clickCount++;
             const messages = [
-                'Yay! Kamu klik aku! 😸 Ayo mulai belajar bareng!',
-                'Hihi~ Kamu lucu banget! 🥰 Mau review tugas yuk?',
-                'Uwaa~ Jangan geli-geli dong! 😂 Yuk upload tugas!',
-                'Kyaa~ Kamu playful banget! 💕 Mari belajar sama-sama!',
-                'Hehe~ Sudah ' + clickCount + ' kali klik! 🎉 Semangat belajar ya!'
+                'Hai! Senang berkenalan denganmu! 😸 Kami adalah Peer-Cutie!',
+                'Hihi~ Kamu ingin tahu lebih banyak tentang kami? 🥰 Scroll ke bawah yuk!',
+                'Uwaa~ Terima kasih sudah mau kenal kami! 😂 Yuk jadi teman belajar!',
+                'Kyaa~ Kamu manis banget! 💕 Mari bergabung di komunitas cute kami!',
+                'Hehe~ Sudah ' + clickCount + ' kali klik! 🎉 Kamu sudah jadi bagian keluarga kami!'
             ];
             
             const randomMessage = messages[Math.min(clickCount - 1, messages.length - 1)];
             showCuteAlert(randomMessage);
             
-            // Add some visual effects
             createFloatingHearts();
         }
         
-        function startAdventure() {
-            showCuteAlert('Woohooo! 🎉 Selamat datang di petualangan belajar yang seru! Mari mulai dengan login atau register ya! 💖');
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+            showCuteAlert('Yuk lihat fitur-fitur cute kami! 🌟 Pasti bikin kamu jatuh cinta! 💖');
+        }
+        
+        function joinUs() {
+            showCuteAlert('Woohooo! 🎉 Yuk daftar sekarang dan mulai petualangan belajar yang seru! 💕');
+        }
+        
+        function startJourney() {
+            showCuteAlert('Amazing! 🚀 Mari mulai journey belajar yang penuh warna dan kegembiraan! ✨');
         }
         
         function learnMore() {
-            showCuteAlert('Peer-Cutie adalah platform review tugas yang super cute dan fun! 🌈 Kamu bisa upload tugas, dapat feedback, dan bantu teman-teman juga! ✨');
+            showCuteAlert('Peer-Cutie siap membantu perjalanan belajar kamu jadi lebih menyenangkan! 🌈 Explore semua fitur kami ya! 💫');
         }
         
         function surpriseMe() {
             const randomEmoji = surpriseEmojis[Math.floor(Math.random() * surpriseEmojis.length)];
-            showCuteAlert('SURPRISE! ' + randomEmoji + ' Semoga hari kamu selalu ceria dan penuh semangat belajar! 💕');
+            showCuteAlert('SURPRISE! ' + randomEmoji + ' Terima kasih sudah mengunjungi halaman About kami! Semoga hari kamu selalu ceria! 💕');
             createConfetti();
         }
         
         function showCuteAlert(message) {
-            // Create custom cute alert
             const alertDiv = document.createElement('div');
             alertDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 card-gradient-1 p-8 rounded-3xl cute-shadow z-50 max-w-md text-center';
             alertDiv.innerHTML = `
@@ -313,7 +393,6 @@
             
             document.body.appendChild(alertDiv);
             
-            // Auto remove after 5 seconds
             setTimeout(() => {
                 if (alertDiv.parentElement) {
                     alertDiv.remove();
@@ -355,9 +434,7 @@
             }
         }
         
-        // Add some interactive hover effects
         document.addEventListener('DOMContentLoaded', () => {
-            // Add sparkle effect on hover for buttons
             const buttons = document.querySelectorAll('button, .hover-lift');
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
@@ -369,7 +446,6 @@
                 });
             });
             
-            // Close mobile menu when clicking outside
             document.addEventListener('click', (e) => {
                 const menu = document.getElementById('mobileMenu');
                 const menuButton = e.target.closest('button');
