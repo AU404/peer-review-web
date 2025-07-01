@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Tambah buat AJAX -->
     <title>Beranda Peer-Cutie</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -10,50 +11,12 @@
         
         body { font-family: 'Poppins', sans-serif; }
         
-        @keyframes bounceCute { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-15px); } 
-        }
-        
-        @keyframes wiggle {
-            0%, 7% { transform: rotateZ(0); }
-            15% { transform: rotateZ(-15deg); }
-            20% { transform: rotateZ(10deg); }
-            25% { transform: rotateZ(-10deg); }
-            30% { transform: rotateZ(6deg); }
-            35% { transform: rotateZ(-4deg); }
-            40%, 100% { transform: rotateZ(0); }
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-        
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            25% { filter: hue-rotate(90deg); }
-            50% { filter: hue-rotate(180deg); }
-            75% { filter: hue-rotate(270deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes bounceCute { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes wiggle { 0%, 7% { transform: rotateZ(0); } 15% { transform: rotateZ(-15deg); } 20% { transform: rotateZ(10deg); } 25% { transform: rotateZ(-10deg); } 30% { transform: rotateZ(6deg); } 35% { transform: rotateZ(-4deg); } 40%, 100% { transform: rotateZ(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+        @keyframes sparkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 25% { filter: hue-rotate(90deg); } 50% { filter: hue-rotate(180deg); } 75% { filter: hue-rotate(270deg); } 100% { filter: hue-rotate(360deg); } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
         .cute-bounce { animation: bounceCute 3s infinite; }
         .wiggle { animation: wiggle 2s ease-in-out infinite; }
@@ -63,94 +26,26 @@
         .slide-in { animation: slideInUp 0.6s ease-out; }
         
         .pastel-gradient {
-            background: linear-gradient(135deg, 
-                #FFB6C1 0%,   /* Light Pink */
-                #E6E6FA 25%,  /* Lavender */
-                #B0E0E6 50%,  /* Powder Blue */
-                #F0E68C 75%,  /* Khaki */
-                #DDA0DD 100%  /* Plum */
-            );
+            background: linear-gradient(135deg, #FFB6C1, #E6E6FA, #B0E0E6, #F0E68C, #DDA0DD);
         }
         
-        .card-gradient-1 {
-            background: linear-gradient(135deg, #FFE4E1, #F0E68C);
-        }
+        .card-gradient-1 { background: linear-gradient(135deg, #FFE4E1, #F0E68C); }
+        .card-gradient-2 { background: linear-gradient(135deg, #E6E6FA, #B0E0E6); }
+        .card-gradient-3 { background: linear-gradient(135deg, #F0FFFF, #FFB6C1); }
+        .card-gradient-4 { background: linear-gradient(135deg, #FFEFD5, #DDA0DD); }
         
-        .card-gradient-2 {
-            background: linear-gradient(135deg, #E6E6FA, #B0E0E6);
-        }
+        .glass-effect { backdrop-filter: blur(15px); background: rgba(255, 255, 255, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .cute-shadow { box-shadow: 0 8px 32px rgba(221, 160, 221, 0.3); }
+        .hover-lift { transition: all 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 15px 40px rgba(255, 182, 193, 0.4); }
+        .emoji-float { position: absolute; font-size: 2rem; opacity: 0.7; animation: float 4s ease-in-out infinite; }
+        .feed-card { border-radius: 20px; overflow: hidden; position: relative; }
+        .feed-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #FFB6C1, #DDA0DD, #B0E0E6); }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #FFB6C1, #DDA0DD); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; font-weight: bold; }
+        .empty-state { text-align: center; padding: 4rem 2rem; }
+        .modal { display: none; }
         
-        .card-gradient-3 {
-            background: linear-gradient(135deg, #F0FFFF, #FFB6C1);
-        }
-        
-        .card-gradient-4 {
-            background: linear-gradient(135deg, #FFEFD5, #DDA0DD);
-        }
-        
-        .glass-effect {
-            backdrop-filter: blur(15px);
-            background: rgba(255, 255, 255, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .cute-shadow {
-            box-shadow: 0 8px 32px rgba(221, 160, 221, 0.3);
-        }
-        
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.4);
-        }
-        
-        .emoji-float {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0.7;
-            animation: float 4s ease-in-out infinite;
-        }
-        
-        .feed-card {
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .feed-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #FFB6C1, #DDA0DD, #B0E0E6);
-        }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FFB6C1, #DDA0DD);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .emoji-float { display: none; }
-        }
+        @media (max-width: 768px) { .emoji-float { display: none; } }
     </style>
 </head>
 <body class="antialiased pastel-gradient min-h-screen relative overflow-x-hidden">
@@ -197,7 +92,7 @@
         <div class="max-w-4xl mx-auto px-6">
             <div class="space-y-6">
                 @forelse ($assignments as $index => $assignment)
-                    <div class="feed-card bg-white cute-shadow hover-lift slide-in" style="animation-delay: {{ $index * 0.1 }}s;">
+                    <div class="feed-card bg-white cute-shadow hover-lift slide-in cursor-pointer" style="animation-delay: {{ $index * 0.1 }}s;" onclick="openTaskModal({{ $assignment->id }})">
                         <!-- Card Header -->
                         <div class="p-6 border-b border-purple-100">
                             <div class="flex items-center space-x-4">
@@ -300,6 +195,19 @@
         </button>
     </div>
 
+    <!-- Task Modal -->
+    <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal" style="display: none;">
+        <div class="card-gradient-1 p-6 rounded-3xl cute-shadow max-w-xl w-full">
+            <h3 id="taskTitle" class="text-xl font-bold text-purple-800 mb-4"></h3>
+            <div id="taskContent" class="mb-4">
+                <!-- File dan Komentar bakal dimuat di sini -->
+            </div>
+            <textarea id="commentInput" class="cute-input w-full mb-4" placeholder="Tambah komentar... 💭" rows="3"></textarea>
+            <button onclick="submitComment()" class="cute-button w-full mb-4">Kirim Komentar 📝</button>
+            <button onclick="document.getElementById('taskModal').style.display='none'" class="cute-button-secondary w-full">Tutup</button>
+        </div>
+    </div>
+
     <script>
         let clickCount = 0;
         const surpriseEmojis = ['🎊', '🎈', '🎁', '🍰', '🦄', '🌟', '💝', '🎪'];
@@ -347,6 +255,61 @@
             }
         }
         
+        // Open task modal
+        function openTaskModal(taskId) {
+            fetch(`/task/${taskId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('taskModal').dataset.taskId = taskId; // Simpan ID
+                    document.getElementById('taskTitle').textContent = data.title;
+                    const content = document.getElementById('taskContent');
+                    content.innerHTML = `
+                        <p class="text-purple-600 mb-2">${data.description || 'Tidak ada deskripsi'}</p>
+                        ${data.file_path ? `<a href="${data.file_url}" target="_blank" class="text-blue-500 underline flex items-center"><span class="text-lg mr-1">📄</span>Lihat File</a>` : '<p>Tidak ada file</p>'}
+                        <div id="commentsSection" class="mt-4 space-y-2">
+                            ${data.comments.map(comment => `
+                                <div class="p-2 bg-white bg-opacity-50 rounded">
+                                    <p class="font-semibold text-purple-800">${comment.user_name}</p>
+                                    <p class="text-sm text-purple-600">${comment.comment}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    document.getElementById('taskModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching task:', error));
+        }
+
+        // Submit comment
+        function submitComment() {
+            const taskId = document.getElementById('taskModal').dataset.taskId;
+            const comment = document.getElementById('commentInput').value.trim();
+            if (!comment) {
+                showCuteAlert('Komentar ga boleh kosong ya bestie! 😅');
+                return;
+            }
+
+            fetch(`/task/${taskId}/comment`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ comment }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    openTaskModal(taskId); // Reload komentar
+                    document.getElementById('commentInput').value = '';
+                    showCuteAlert('Komentar berhasil dikirim! 💖');
+                } else {
+                    showCuteAlert('Gagal kirim komentar: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error submitting comment:', error));
+        }
+        
         // Add interactive effects when page loads
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('button, .hover-lift');
@@ -354,13 +317,11 @@
                 button.addEventListener('mouseenter', () => {
                     button.style.filter = 'brightness(1.1) saturate(1.2)';
                 });
-                
                 button.addEventListener('mouseleave', () => {
                     button.style.filter = 'none';
                 });
             });
             
-            // Add staggered animation to feed cards
             const feedCards = document.querySelectorAll('.feed-card');
             feedCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;

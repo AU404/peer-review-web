@@ -37,16 +37,19 @@ require __DIR__.'/auth.php';
 
 // Protected Routes (Authenticated Users Only)
 Route::middleware(['auth', 'verified'])->group(function () {
-    
-   // Dashboard Routes
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
-Route::post('/dashboard/{id}/review', [DashboardController::class, 'review'])->name('dashboard.review');
-Route::post('/dashboard/{id}/assign', [DashboardController::class, 'assignReviewer'])->name('dashboard.assign');
-Route::get('/choose', function () {
-    return view('choose');
-})->name('choose');
-Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+    // Dashboard Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
+    Route::post('/dashboard/{id}/review', [DashboardController::class, 'review'])->name('dashboard.review');
+    Route::post('/dashboard/{id}/assign', [DashboardController::class, 'assignReviewer'])->name('dashboard.assign');
+    Route::get('/choose', function () {
+        return view('choose');
+    })->name('choose');
+    Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+
+    // Beranda AJAX Routes
+    Route::get('/task/{id}', [BerandaController::class, 'show']);
+    Route::post('/task/{id}/comment', [BerandaController::class, 'comment']);
 
     // Profile Management Routes
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -92,9 +95,10 @@ Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
     // API Routes for AJAX calls
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('/assignments/{assignment}/reviewers', [AssignmentController::class, 'getReviewers']);
-        Route::post('/assignments/{assignment}/assign-reviewer', [AssignmentController::class, 'assignRandomReviewer']);
+        Route::post('/assignments/{assignment}/assign-reviewer', [DashboardController::class, 'assignReviewer']);
         Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
         Route::post('/reviews/{review}/auto-save', [PeerReviewController::class, 'autoSave']);
+        Route::post('/dashboard/{id}/assign', [DashboardController::class, 'assignReviewer'])->name('dashboard.assign');
     });
 
     // Student/Peer specific routes
@@ -117,10 +121,9 @@ Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
             return response()->download(storage_path('app/assignments/' . $file));
         })->name('download');
     });
-
 });
 
-// Admin Routes (if you have admin functionality)
+// Admin Routes
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -139,7 +142,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     })->name('reviews');
 });
 
-// Fallback route for cute 404 page
+// Fallback route
 Route::fallback(function () {
-    return view('errors.404-cute');
+    return view('errors.404');
 });

@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $assignments = Assignment::where('user_id', auth()->id())->get();
+        $assignments = Assignment::where('user_id', auth()->id())->with(['user', 'reviews'])->get();
         return view('dashboard', compact('assignments'));
     }
 
@@ -56,6 +56,10 @@ class DashboardController extends Controller
 
         $assignment->update(['status' => 'reviewed']);
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Review berhasil ditambahkan!']);
+        }
+
         return redirect()->back()->with('success', 'Review berhasil disubmit!');
     }
 
@@ -65,7 +69,7 @@ class DashboardController extends Controller
         $otherUsers = User::where('id', '!=', $assignment->user_id)->get();
 
         if ($otherUsers->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada reviewer lain yang tersedia.');
+            return response()->json(['success' => false, 'message' => 'Tidak ada reviewer lain yang tersedia.'], 400);
         }
 
         $randomUser = $otherUsers->random();
@@ -73,13 +77,12 @@ class DashboardController extends Controller
         try {
             $assignment->assigned_to = $randomUser->id;
             $assignment->save();
-            $notification = $randomUser->notify(new \App\Notifications\AssignmentAssigned($assignment));
-            \Log::info('Notification sent to: ' . $randomUser->id . '. Notifiable: ' . json_encode($randomUser->routes) . '. Notification ID: ' . ($notification ? $notification->id : 'null'));
-    } catch (\Exception $e) {
+            $randomUser->notify(new \App\Notifications\AssignmentAssigned($assignment));
+            \Log::info('Notification sent to: ' . $randomUser->id);
+            return response()->json(['success' => true, 'message' => 'Reviewer ' . $randomUser->name . ' ditugaskan!']);
+        } catch (\Exception $e) {
             \Log::error('Update or Notification failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal assign reviewer: ' . $e->getMessage());
-    }
-
-        return redirect()->back()->with('success', 'Reviewer ' . $randomUser->name . ' ditugaskan!');
+            return response()->json(['success' => false, 'message' => 'Gagal assign reviewer: ' . $e->getMessage()], 400);
+        }
     }
 }

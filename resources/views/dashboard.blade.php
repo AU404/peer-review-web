@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard - Peer-Review Tugas Cute</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -311,7 +312,14 @@
                     <h2 class="text-2xl md:text-3xl font-bold text-purple-800">Upload Tugas Cutie</h2>
                 </div>
                 
-                <form id="uploadForm" onsubmit="handleUpload(event)" class="space-y-6">
+                <form 
+                    action="{{ route('dashboard.store') }}" 
+                    method="POST" 
+                    enctype="multipart/form-data" 
+                    class="space-y-6"
+                >
+                    @csrf
+
                     <!-- Title Input -->
                     <div class="space-y-2">
                         <label class="flex items-center text-lg font-semibold text-purple-800">
@@ -325,7 +333,9 @@
                             placeholder="Tulis judul tugas yang keren..." 
                             required
                         >
-                        <p class="text-red-500 text-sm mt-1 hidden" id="titleError">Judul tugas wajib diisi ya, bestie! 🥺</p>
+                        @error('title')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Description Input -->
@@ -340,6 +350,9 @@
                             class="cute-input w-full text-purple-800 placeholder-purple-400 resize-none" 
                             placeholder="Ceritakan tentang tugas kamu di sini... ✨"
                         ></textarea>
+                        @error('description')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- File Upload -->
@@ -354,13 +367,15 @@
                                 name="file" 
                                 accept=".pdf,.doc,.docx"
                                 class="cute-input w-full text-purple-800 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-purple-700 hover:file:bg-pink-200 file:cursor-pointer"
-                                onchange="handleFileSelect(event)"
+                                required
                             >
                             <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl sparkle">
                                 📁
                             </div>
                         </div>
-                        <p class="text-red-500 text-sm mt-1 hidden" id="fileError">File tidak valid atau terlalu besar! 😅</p>
+                        @error('file')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                         <div class="text-sm text-purple-600 bg-purple-100 p-3 rounded-xl mt-2">
                             <span class="font-semibold">💡 Tips:</span> Pastikan file kamu dalam format PDF atau DOC ya! Dan jangan lupa ukurannya maksimal 2MB ✨
                         </div>
@@ -378,6 +393,12 @@
                         </button>
                     </div>
                 </form>
+
+                @if (session('success'))
+                    <div class="mt-6 bg-green-100 border border-green-300 text-green-800 p-4 rounded-xl shadow-lg animate-fade-in">
+                        🎉 <strong>{{ session('success') }}</strong>
+                    </div>
+                @endif
             </div>
 
             <!-- Loading Animation (Hidden by default) -->
@@ -485,89 +506,108 @@
                 
                 <div id="assignmentList" class="space-y-6">
                     <!-- Sample Assignment Card -->
-                    <div class="assignment-card p-6 hover-lift">
-                        <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                            <div class="flex-1">
-                                <div class="flex items-center mb-2">
-                                    <span class="text-2xl mr-2 sparkle">📚</span>
-                                    <h3 class="text-xl font-bold text-purple-800">Contoh Tugas Matematika</h3>
+                    @foreach ($assignments as $assignment)
+                        <div class="assignment-card p-6 hover-lift">
+                            <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <span class="text-2xl mr-2 sparkle">📚</span>
+                                        <h3 class="text-xl font-bold text-purple-800">{{ $assignment->title }}</h3>
+                                    </div>
+                                    <p class="text-purple-600 mb-3">{{ $assignment->description ?: 'Tidak ada deskripsi' }}</p>
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <span class="status-badge {{ $assignment->status === 'reviewed' ? 'status-reviewed' : 'status-pending' }}">
+                                            {{ $assignment->status === 'reviewed' ? '✅ Sudah Direview' : '⏳ Menunggu Review' }}
+                                        </span>
+                                        @if($assignment->file_path)
+                                            <a href="{{ route('files.download', $assignment->file_path) }}" class="text-blue-500 hover:text-blue-700 underline flex items-center" target="_blank">
+                                                <span class="text-lg mr-1">📄</span>
+                                                Lihat File
+                                            </a>
+                                        @else
+                                            <span class="text-gray-500">Tidak ada file</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-sm text-purple-500">
+                                        <span class="font-semibold">Reviewer:</span> {{ $assignment->assigned_to ? $assignment->user->name : 'Belum ditentukan' }}
+                                    </p>
                                 </div>
-                                <p class="text-purple-600 mb-3">Ini adalah contoh deskripsi tugas yang menarik dan informatif.</p>
-                                <div class="flex flex-wrap items-center gap-3 mb-3">
-                                    <span class="status-badge status-pending">
-                                        ⏳ Menunggu Review
-                                    </span>
-                                    <a href="#" class="text-blue-500 hover:text-blue-700 underline flex items-center">
-                                        <span class="text-lg mr-1">📄</span>
-                                        Lihat File
-                                    </a>
-                                </div>
-                                <p class="text-sm text-purple-500">
-                                    <span class="font-semibold">Reviewer:</span> Belum ditentukan
-                                </p>
                             </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex flex-wrap gap-3 mb-4">
-                            <button onclick="assignRandomReviewer(1)" class="cute-button-secondary text-sm px-4 py-2 flex items-center space-x-1">
-                                <span>🎲</span>
-                                <span>Assign Reviewer Acak</span>
-                            </button>
-                        </div>
-
-                        <!-- Review Form -->
-                        <div class="bg-white bg-opacity-50 p-4 rounded-xl mb-4">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2 wiggle">✍️</span>
-                                <h4 class="font-bold text-lg text-purple-800">Tambah Review Cutie</h4>
+                            <!-- Action Buttons -->
+                            <div class="flex flex-wrap gap-3 mb-4">
+                                <button 
+                                    onclick="assignRandomReviewer({{ $assignment->id }})" 
+                                    class="cute-button-secondary text-sm px-4 py-2 flex items-center space-x-1">
+                                    <span>🎲</span>
+                                    <span>Assign Reviewer Acak</span>
+                                </button>
                             </div>
-                            <form onsubmit="submitReview(event, 1)" class="space-y-3">
-                                <textarea 
-                                    name="comment" 
-                                    rows="3"
-                                    class="cute-input w-full text-sm" 
-                                    placeholder="Tulis komentar review yang membangun ya bestie... 💭"
-                                    required
-                                ></textarea>
-                                <div class="flex flex-col sm:flex-row gap-3">
-                                    <input 
-                                        type="number" 
-                                        name="score" 
-                                        class="cute-input flex-1 text-sm" 
-                                        placeholder="Skor (0-100)" 
-                                        min="0" 
-                                        max="100"
-                                    >
-                                    <button type="submit" class="cute-button text-sm px-6 py-2 flex items-center space-x-1">
-                                        <span>📝</span>
-                                        <span>Submit Review</span>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
 
-                        <!-- Review List -->
-                        <div class="space-y-3" id="reviewList-1">
-                            <div class="review-card p-4">
-                                <div class="flex items-start space-x-3">
-                                    <div class="text-2xl">👤</div>
-                                    <div class="flex-1">
-                                        <p class="font-semibold text-purple-800 mb-1">Reviewer Cutie</p>
-                                        <p class="text-purple-600 text-sm mb-2">Tugas ini sudah bagus! Keep up the good work! 👏</p>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="status-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513;">
-                                                ⭐ Skor: 85/100
-                                            </span>
+                            <script>
+                                function assignRandomReviewer(id) {
+                                    fetch(`/dashboard/${id}/assign`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({})
+                                    })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        alert(data.message);
+                                        location.reload();
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        alert('Gagal assign reviewer. Coba cek koneksi atau console!');
+                                    });
+                                }
+                            </script>
+                            <!-- Review Form dan Review List (sesuaikan ID) -->
+                            <div class="bg-white bg-opacity-50 p-4 rounded-xl mb-4">
+                                <div class="flex items-center mb-3">
+                                    <span class="text-2xl mr-2 wiggle">✍️</span>
+                                    <h4 class="font-bold text-lg text-purple-800">Tambah Review Cutie</h4>
+                                </div>
+                                <form onsubmit="submitReview(event, {{ $assignment->id }})" class="space-y-3">
+                                    <textarea name="comment" rows="3" class="cute-input w-full text-sm" placeholder="Tulis komentar review yang membangun ya bestie... 💭" required></textarea>
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <input type="number" name="score" class="cute-input flex-1 text-sm" placeholder="Skor (0-100)" min="0" max="100">
+                                        <button type="submit" class="cute-button text-sm px-6 py-2 flex items-center space-x-1">
+                                            <span>📝</span>
+                                            <span>Submit Review</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="space-y-3" id="reviewList-{{ $assignment->id }}">
+                                @forelse($assignment->reviews as $review)
+                                    <div class="review-card p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="text-2xl">👤</div>
+                                            <div class="flex-1">
+                                                <p class="font-semibold text-purple-800 mb-1">{{ $review->user->name }} (Reviewer)</p>
+                                                <p class="text-purple-600 text-sm mb-2">{{ $review->comment }}</p>
+                                                @if($review->score)
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="status-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513;">
+                                                            ⭐ Skor: {{ $review->score }}/100
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @empty
+                                    <p class="text-purple-600 text-sm italic">Belum ada review. Yuk jadi yang pertama! 🌟</p>
+                                @endforelse
                             </div>
                         </div>
-                    </div>
+                    @endforeach
 
                     <!-- Empty State -->
-                    <div id="emptyState" class="text-center py-12" style="display: none;">
+                    <div id="emptyState" class="text-center py-12" style="display: {{ $assignments->isEmpty() ? 'block' : 'none' }};">
                         <div class="text-6xl mb-4 float">📝</div>
                         <h3 class="text-2xl font-bold text-purple-800 mb-2">Belum ada tugas nih!</h3>
                         <p class="text-purple-600">Yuk upload tugas pertama kamu di atas! 🚀</p>
@@ -683,75 +723,75 @@
             newAssignment.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // Assign random reviewer
-        function assignRandomReviewer(assignmentId) {
-            const randomReviewer = reviewers[Math.floor(Math.random() * reviewers.length)];
-            const assignmentCard = document.querySelector(`#reviewList-${assignmentId}`).closest('.assignment-card');
-            const reviewerInfo = assignmentCard.querySelector('.text-purple-500');
-            
-            reviewerInfo.innerHTML = `<span class="font-semibold">Reviewer:</span> ${randomReviewer}`;
-            
-            showCelebration(`Yeay! ${randomReviewer} sudah di-assign sebagai reviewer! 🎉`);
-            
-            // Update status
-            const statusBadge = assignmentCard.querySelector('.status-badge');
-            statusBadge.className = 'status-badge status-in-progress';
-            statusBadge.innerHTML = '👨‍💻 Sedang Direview';
-        }
-
         // Submit review
         function submitReview(event, assignmentId) {
             event.preventDefault();
-            
+
             const form = event.target;
             const comment = form.comment.value.trim();
             const score = form.score.value;
-            
+
             if (!comment) {
                 showCuteAlert('Komentar tidak boleh kosong ya bestie! 😅', 'error');
                 return;
             }
-            
-            const reviewList = document.getElementById(`reviewList-${assignmentId}`);
-            
-            // Remove "no reviews" message if exists
-            const noReviewMsg = reviewList.querySelector('p.italic');
-            if (noReviewMsg) {
-                noReviewMsg.remove();
-            }
-            
-            const newReview = document.createElement('div');
-            newReview.className = 'review-card p-4';
-            newReview.innerHTML = `
-                <div class="flex items-start space-x-3">
-                    <div class="text-2xl">👤</div>
-                    <div class="flex-1">
-                        <p class="font-semibold text-purple-800 mb-1">Kamu (Reviewer)</p>
-                        <p class="text-purple-600 text-sm mb-2">${comment}</p>
-                        ${score ? `
-                        <div class="flex items-center space-x-2">
-                            <span class="status-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513;">
-                                ⭐ Skor: ${score}/100
-                            </span>
+
+            fetch(`/dashboard/${assignmentId}/review`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ comment, score })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP status ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log('✅ Response dari server:', data);
+
+                const reviewList = document.getElementById(`reviewList-${assignmentId}`);
+
+                // Hapus pesan "belum ada review"
+                const noReviewMsg = reviewList.querySelector('p.italic');
+                if (noReviewMsg) noReviewMsg.remove();
+
+                const newReview = document.createElement('div');
+                newReview.className = 'review-card p-4';
+                newReview.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="text-2xl">👤</div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-purple-800 mb-1">Kamu (Reviewer)</p>
+                            <p class="text-purple-600 text-sm mb-2">${comment}</p>
+                            ${score ? `
+                            <div class="flex items-center space-x-2">
+                                <span class="status-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513;">
+                                    ⭐ Skor: ${score}/100
+                                </span>
+                            </div>
+                            ` : ''}
                         </div>
-                        ` : ''}
                     </div>
-                </div>
-            `;
-            
-            reviewList.appendChild(newReview);
-            
-            // Update assignment status
-            const assignmentCard = reviewList.closest('.assignment-card');
-            const statusBadge = assignmentCard.querySelector('.status-badge');
-            statusBadge.className = 'status-badge status-reviewed';
-            statusBadge.innerHTML = '✅ Sudah Direview';
-            
-            // Reset form
-            form.reset();
-            
-            showCelebration('Review berhasil ditambahkan! Terima kasih sudah membantu teman! 💖');
+                `;
+                reviewList.appendChild(newReview);
+
+                // Ubah status jadi "Sudah Direview"
+                const assignmentCard = reviewList.closest('.assignment-card');
+                const statusBadge = assignmentCard.querySelector('.status-badge');
+                statusBadge.className = 'status-badge status-reviewed';
+                statusBadge.innerHTML = '✅ Sudah Direview';
+
+                form.reset();
+                showCelebration('Review berhasil ditambahkan! Terima kasih sudah membantu teman! 💖');
+            })
+            .catch(error => {
+                console.error('❌ Gagal submit review:', error);
+                alert('Gagal mengirim review! Lihat console (F12) untuk detail error.');
+            });
         }
+
 
         // Show celebration modal
         function showCelebration(message) {
@@ -886,5 +926,6 @@
             });
         });
     </script>
+    <script src="{{ asset('js/app.js') }}" defer></script>
 </body>
 </html>
